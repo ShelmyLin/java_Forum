@@ -1,0 +1,156 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.lin.lin_homework_v01.DetailFragment"
+    android:id="@+id/Fragment_Detail"
+    android:orientation="vertical"
+    android:weightSum="1">
+
+    <!-- TODO: Update blank fragment layout -->
+
+
+    <TextView
+        android:layout_width="236dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Title"
+        android:id="@+id/textView_2"
+        android:layout_marginTop="29dp"
+        android:layout_below="@+id/textView_Author_Frag"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="43dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="here shows the title"
+        android:background="@drawable/back"
+        android:id="@+id/textView_Title_Frag"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textView_2"
+        android:layout_alignRight="@+id/textView_Author_Frag"
+        android:layout_alignEnd="@+id/textView_Author_Frag"
+        android:editable="true"
+        android:enabled="true"
+        android:focusable="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Author"
+        android:id="@+id/textView_1"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="43dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="here shows the author"
+        android:background="@drawable/back"
+        android:id="@+id/textView_Author_Frag"
+        android:layout_below="@+id/textView_1"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:editable="true"
+        android:enabled="true"
+        android:autoText="false" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Date"
+        android:id="@+id/textView_3"
+        android:layout_below="@+id/textView_Title_Frag"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="29dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="33dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="here shows the date"
+        android:background="@drawable/back"
+        android:id="@+id/textView_Date_Frag"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textView_3"
+        android:layout_alignRight="@+id/textView_Title_Frag"
+        android:layout_alignEnd="@+id/textView_Title_Frag"
+        android:editable="true"
+        android:enabled="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Message"
+        android:id="@+id/textView_4"
+        android:layout_marginTop="30dp"
+        android:layout_below="@+id/textView_Date_Frag"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="175dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="here shows the message"
+        android:background="@drawable/back"
+        android:id="@+id/textView_Message_Frag"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textView_4"
+        android:layout_alignRight="@+id/textView_Date_Frag"
+        android:layout_alignEnd="@+id/textView_Date_Frag"
+        android:layout_above="@+id/button_Add_Frag"
+        android:editable="true"
+        android:enabled="true" />
+
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.example.lin.lin_homework_v01.DetailFragment"
+        android:weightSum="100">
+
+        <Button
+        android:layout_width="30dp"
+        android:layout_height="50dp"
+        android:text="Prev"
+        android:id="@+id/button_ShowPrev"
+        android:onClick="Show_Prev_Message"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_weight="33" />
+
+        <Button
+        android:layout_width="30dp"
+        android:layout_height="50dp"
+        android:text="Add"
+        android:id="@+id/button_Add_fd"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_weight="35" />
+
+        <Button
+            android:layout_width="30dp"
+            android:layout_height="50dp"
+            android:text="Next"
+            android:id="@+id/button_ShowNext"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_weight="35" />
+    </LinearLayout>
+
+</LinearLayout>

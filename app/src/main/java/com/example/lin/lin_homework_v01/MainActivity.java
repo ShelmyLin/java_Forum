@@ -1,9 +1,12 @@
 package com.example.lin.lin_homework_v01;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -36,37 +39,39 @@ import java.util.List;
 import java.util.Random;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity
+        implements ListFragment.OnFragmentInteractionListener,
+                   DetailFragment.OnFragmentInteractionListener,
+                   AddFragment.OnFragmentInteractionListener{
 
     private static final String TAG = "MainActitivity";
 
     public static ArrayList<Post> posts = new ArrayList<Post>();
     public static boolean Update = true;
-    private static boolean readJsonDone = false;
-    private ListView list_view;
 
+    static boolean isTablet = false;
+    ListFragment listFrag = new ListFragment();
+    //DetailFragment detailFragment = new DetailFragment();
     PostReader post_reader = new PostReader();
     private Handler handler = new Handler();
     private Runnable runnable = new Runnable() {
         public void run() {
-            //Log.d(TAG, "Runnable run() starts...");
 
             this.update();
-            handler.postDelayed(this, 1000*2);// update every 0.5 seconds
+            handler.postDelayed(this, 1000);// update every 1000 ms
 
-            //Log.d(TAG, "Runnable run() ends...");
 
         }
         void update() {
             /*when posts are refreshed, Update will be set true*/
-            Log.d(TAG, "posts size: " + posts.size());
-            if(Update == true) {
+            //Log.d(TAG, "posts size: " + posts.size());
+            if(Update == true)
+            {
                 //posts = post_reader.GetPosts();
                 Log.d(TAG, "update begins...post size: " + posts.size() );
-                Set_Posts_To_List_View(posts);
+                //listFrag.update(posts);
                 Log.d(TAG,"trying to get data from server...");
                 ConnectivityManager connMgr = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-
                 NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
                 //Log.d(TAG, "ConnectivityManager getActiveNetworkInfo done");
 
@@ -75,11 +80,13 @@ public class MainActivity extends ActionBarActivity {
                     Log.d(TAG, "connected to the Internet!");
                     ArrayList<Post> m_posts = new ArrayList<Post>();
                     m_posts  = post_reader.GetPosts("http://forum.openium.fr/api/posts");
+                    Log.d(TAG, "get posts: " + m_posts.size());
 
                     if(m_posts.size() > 0)
                     {
+
                         posts = m_posts;
-                        Set_Posts_To_List_View(posts);
+                        listFrag.update(posts);
                         Update = false;
                     }
 
@@ -95,13 +102,7 @@ public class MainActivity extends ActionBarActivity {
     };
 
 
-
-
-
-
-
     public final static String SHOW_POST_MESSAGE = "show_post_message";
-    public final static String SHOW_POST_LIST    = "show_post_list";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,11 +110,27 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         setTitle("IsiForum_v3");
 
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.listContainer,listFrag);
+
+
+        if(findViewById(R.id.detailContainer) == null)
+        {
+            Log.d(TAG, "this is phone");
+            isTablet = false;
+
+        }else
+        {
+            Log.d(TAG, "this is tablet");
+            isTablet = true;
+            /*start add fragment*/
+            AddFragment addFragment = new AddFragment();
+            fragmentTransaction.replace(R.id.detail_Container,addFragment);
+
+        }
+        fragmentTransaction.commit();
         Update = true;
         handler.postDelayed(runnable, 100);
-
-
-
 
     }
 
@@ -142,83 +159,42 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     protected void onDestroy() {
-        handler.removeCallbacks(runnable); //停止刷新
+        handler.removeCallbacks(runnable); //stop refresh
         super.onDestroy();
     }
 
-    public ArrayList<Post> readPostsFromJsonFile(int resourceId) {
-
-        Log.d(TAG, "Reading posts from JSON file...");
-        ArrayList<Post> posts = new ArrayList();
-
-        // read and deserialize the file
-        BufferedReader br = new BufferedReader(new InputStreamReader(getResources().openRawResource(resourceId)));
-
-        //get json array from buffered reader
-        JsonElement jsonElement = new JsonParser().parse(br);
-        JsonArray jsonArray = jsonElement.getAsJsonArray();
-
-        // create posts from JSON elements and add it to the list
-        Gson gson = new Gson();
-        int i = 0;
-        for (JsonElement e : jsonArray) {
-
-            posts.add(gson.fromJson(e, Post.class));
-            //posts.get(i).setId(i);
-            i++;
-        }
-
-        Log.d(TAG, "Read JSON file successfully.");
-
-        // return a list with the deserialized posts
-        return posts;
-
-    }
-
-    /*listen to user's command and respond*/
-    private final class ItemClickEvent implements AdapterView.OnItemClickListener
+    /* receive position from list fragment*/
+    public void OnItemClick(int pos)
     {
-        /*arg2 is where user clicks*/
-        public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3)
-        {
-            String str = (String)list_view.getItemAtPosition(arg2);
-            Log.d(TAG, arg2 + " was clicked: " + str);
 
-            /*create a DisplayMessageActivity to show the detail message*/
-            //Post p = posts.get(arg2);
-            Intent intent = new Intent(getApplicationContext(), DisplayMessageActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putSerializable(MainActivity.SHOW_POST_MESSAGE, arg2);
-            intent.putExtras(bundle);
+        Log.d(TAG, "MainActivity receive: " + pos + " from ListFragment");
+
+        if(!isTablet) // phone
+        {
+            Intent intent = new Intent(this, DisplayMessageActivity.class);
+            intent.putExtra(MainActivity.SHOW_POST_MESSAGE, pos);
             startActivity(intent);
-        }
-    }
 
-    public void Add_Message(View v)
-    {
-        Log.d(TAG, "you click Add Message Button");
-        Intent intent = new Intent(getApplicationContext(), AddMessageActivity.class);
-        startActivity(intent);
-    }
+        }else {
+            Log.d(TAG, "position: " + pos + ", start creating detail fragment...");
 
-    public void Set_Posts_To_List_View(ArrayList<Post> posts)
-    {
-        /*add the authors to each ListView item using Adapter*/
-        Log.d(TAG, "Set_Posts_To_List_View starts...");
-        ArrayList<String> authors = new ArrayList<String>();
-        for (int i = 0; i < posts.size(); i++)
-        {
-            authors.add(posts.get(i).getAuthor());
+            DetailFragment detailFragment = new DetailFragment();
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+
+            Bundle bundle = new Bundle();
+            bundle.putInt("position_communication", pos);
+            detailFragment.setArguments(bundle);
+
+            fragmentTransaction.replace(R.id.detailContainer, detailFragment);
+            fragmentTransaction.commit();
+
         }
 
-        list_view = (ListView)findViewById(R.id.listView_Main);
-        list_view.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, authors));
-
-        /*listen to user's command and respond*/
-        list_view.setOnItemClickListener(new ItemClickEvent());
-        Log.d(TAG, "Set_Posts_To_List_View ends...");
     }
 
 
+    public void onFragmentInteraction(Uri uri) {
+
+    }
 
 }
